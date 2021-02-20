@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Letter } from './Letter';
+import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
 
-const GameBoard = () => (
-  <div className="game-board">
-    <input className="letter" type="text" value="1" />
-    <input className="letter" type="text" value="2" />
-    <input className="letter" type="text" value="3" />
-    <input className="letter" type="text" value="4" />
-    <input className="letter" type="text" value="5" />
-    <input className="letter" type="text" value="6" />
-    <input className="letter" type="text" value="7" />
-    <input className="letter" type="text" value="8" />
-    <input className="letter" type="text" value="9" />
-  </div>
-);
+const GAME_SIZE = 3;
+
+function getRandomWord(size: number):string {
+  const word = RUSSIAN_NOUNS[Math.floor(Math.random() * RUSSIAN_NOUNS.length)];
+  if (word.length !== size) {
+    return getRandomWord(size);
+  }
+  return word.toUpperCase();
+}
+const emptyArray = new Array(GAME_SIZE).fill('');
+const initialArray = emptyArray
+  .concat(getRandomWord(GAME_SIZE).split(''))
+  .concat(emptyArray)
+  .map((item, index) => ({ value: item, id: index.toString() }) );
+
+console.log(initialArray);
+
+const GameBoard = () => {
+  const [array, setArray] = useState(initialArray);
+
+  const letters = initialArray
+    .map((item) => <Letter
+      key={item.id}
+      index={+item.id}
+      value={item.value}
+      array={array}
+      setArray={setArray}
+    />);
+
+  return (
+    <div className="game-board">
+      { letters }
+    </div>
+  );
+};
 
 export { GameBoard };
