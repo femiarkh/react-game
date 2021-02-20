@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+$font-color: #fcfdf4;
+$header-color: #72b3d1;
+$main-color: #cb89bc;
+$board-color: #5eae7c;
+$border-color: #47483c;
+$score-color: #a25fd8;
+$footer-color: #9fa35f;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Open Sans", Verdana, sans-serif;
+  color: $font-color;
+}
+
+.container {
+  height: 100vh;
+}
+
+.header {
+  min-height: 10vh;
+  padding: 10px;
+  background-color: $header-color;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 10px;
+  background-color: $main-color;
+}
+
+.message {
+  margin-bottom: 20px;
+}
+
+.game-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  margin-right: 20px;
+}
+
+.letter {
+  text-align: center;
+  color: $font-color;
+  font-size: 1.4rem;
+  border: 1px solid $border-color;
+  background-color: $board-color;
+}
+
+.score-container {
+  display: flex;
+  background-color: $score-color;
+  padding: 10px;
+  min-width: 200px;
+}
+
+.player-score:not(:last-child) {
+  max-width: 50%;
+  margin-right: 10px;
+}
+
+.player-score__score-list {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.player-score__word {
+  margin-right: 5px;
+}
+
+.footer {
+  min-height: 10vh;
+  padding: 10px;
+  background-color: $footer-color;
+}
