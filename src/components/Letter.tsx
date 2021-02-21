@@ -1,4 +1,5 @@
 import React from 'react';
+import { useArray } from '../hooks/useArray';
 
 type Props = {
   value: string;
@@ -7,16 +8,15 @@ type Props = {
     value: string;
     id: string;
   }[];
-  setArray: React.Dispatch<React.SetStateAction<{
-    value: string;
-    id: string; }[]>>;
 };
 
-const Letter = ({ value, index, array, setArray }: Props) => {
+const Letter = ({ value, index, array }: Props) => {
+  const { changeArray } = useArray();
+
   function changeHandler(evt: React.ChangeEvent<HTMLInputElement>) {
     const newArray = Array.from(array);
     newArray[index].value = evt.target.value;
-    setArray(newArray);
+    changeArray(newArray);
   }
   return <input className="letter" type="text" value={value} onChange={changeHandler} />;
 };

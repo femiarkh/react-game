@@ -51,9 +51,22 @@ body {
 
 .game-board {
   display: grid;
+  margin-right: 20px;
+}
+
+.game-board-small {
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
-  margin-right: 20px;
+}
+
+.game-board-medium {
+  grid-template-columns: repeat(5, 60px);
+  grid-template-rows: repeat(5, 60px);
+}
+
+.game-board-large {
+  grid-template-columns: repeat(7, 45px);
+  grid-template-rows: repeat(7, 45px);
 }
 
 .letter {
