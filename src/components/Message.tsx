@@ -1,5 +1,9 @@
 import React from 'react';
+import { useMessage } from '../hooks/useMessage';
 
-const Message = () => <h3 className="message">Message</h3>;
+const Message = () => {
+  const { message } = useMessage();
+  return  <h3 className="message">{message}</h3>;
+};
 
 export { Message };

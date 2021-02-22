@@ -4,12 +4,15 @@ import { App } from './App';
 import './style/style.scss';
 import { GameSizeProvider } from './context/GameSizeContext';
 import { ArrayProvider } from './context/ArrayContext';
+import { MessageProvider } from './context/MessageContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <GameSizeProvider gameSize={5}>
       <ArrayProvider array={['']}>
-        <App />
+        <MessageProvider message='Ваш ход'>
+          <App />
+        </MessageProvider>
       </ArrayProvider>
     </GameSizeProvider>
   </React.StrictMode>,

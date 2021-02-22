@@ -1,6 +1,7 @@
 import React from 'react';
 import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
+import { useMessage } from '../hooks/useMessage';
 
 type Props = {
   value: string;
@@ -29,17 +30,21 @@ const Letter = ({
   value, index, disabled, usedIndexes, setUsedIndexes }: Props) => {
   const { array, changeArray } = useArray();
   const { gameSize } = useGameSize();
+  const { changeMessage } = useMessage();
 
   function handleBlur(evt: React.ChangeEvent<HTMLInputElement>) {
     if (isInputPossible(index, array, gameSize)
      && isInputLegit(evt.target.value)) {
+      changeMessage('Чудненько! Теперь выберите слово.');
       setUsedIndexes(usedIndexes.concat([index]));
       return;
     }
     if (!isInputLegit(evt.target.value)) {
-      console.log('Input is not legit. Please enter only one letter in Russian.');
+      if (evt.target.value !== '') {
+        changeMessage('Неверный ввод: допустима лишь 1 русская буква.');
+      }
     } else {
-      console.log('Sorry, input is not possible here');
+      changeMessage('Извините, сюда вводить нельзя.');
     }
     const newArray = Array.from(array);
     newArray[index].value = '';
