@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
 import { useMessage } from '../hooks/useMessage';
@@ -57,7 +57,15 @@ const Letter = ({
     changeArray(newArray);
   }
 
-  return <input className="letter" type="text" onChange={handleChange} value={value} onBlur={handleBlur} disabled={disabled} />;
+  function handleKeyDown(evt: React.KeyboardEvent<HTMLInputElement> ) {
+    if (evt.key === 'Enter' && inputRef.current) {
+      inputRef.current.blur();
+    }
+  }
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return <input className="letter" type="text" onChange={handleChange} value={value} onBlur={handleBlur} onKeyDown={handleKeyDown} disabled={disabled} ref={inputRef} />;
 };
 
 export { Letter };
