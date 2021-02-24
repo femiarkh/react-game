@@ -4,6 +4,7 @@ $font-color: #fcfdf4;
 $header-color: #72b3d1;
 $main-color: #cb89bc;
 $board-color: #5eae7c;
+$highlight-color: #a8a80f;
 $border-color: #47483c;
 $score-color: #a25fd8;
 $footer-color: #9fa35f;
@@ -75,6 +76,14 @@ body {
   font-size: 1.4rem;
   border: 1px solid $border-color;
   background-color: $board-color;
+}
+
+.letter--show {
+  cursor: pointer;
+}
+
+.letter--highlighted {
+  background-color: $highlight-color;
 }
 
 .score-container {
