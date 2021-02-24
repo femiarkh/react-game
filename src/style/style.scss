@@ -6,7 +6,8 @@ $main-color: #cb89bc;
 $board-color: #5eae7c;
 $highlight-color: #a8a80f;
 $border-color: #47483c;
-$score-color: #a25fd8;
+$score-background-color: #a25fd8;
+$total-score-color: #f7ac68;
 $footer-color: #9fa35f;
 
 * {
@@ -88,7 +89,7 @@ body {
 
 .score-container {
   display: flex;
-  background-color: $score-color;
+  background-color: $score-background-color;
   padding: 10px;
   min-width: 200px;
 }
@@ -98,13 +99,22 @@ body {
   margin-right: 10px;
 }
 
-.player-score__score-list {
+.player-score__header--moving {
+  color: #ffff80;
+}
+
+.player-score__pair {
   display: flex;
   justify-content: flex-start;
 }
 
 .player-score__word {
   margin-right: 5px;
+}
+
+.player-score__total {
+  font-size: 1.4rem;
+  color: #f7ac68;
 }
 
 .footer {

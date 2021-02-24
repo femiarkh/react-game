@@ -83,23 +83,19 @@ const Letter = ({
       if (input.value === '') {
         changeMessage('Выбор слова был прерван. Давайте заново.');
         setWrongShow(true);
+      } else if (shownIndexes[0] === -1) {
+        input.classList.add('letter--highlighted');
+        setShownIndexes([index]);
       } else {
-        console.log(shownIndexes);
-        if (shownIndexes[0] === -1) {
-          input.classList.add('letter--highlighted');
-          setShownIndexes([index]);
+        const lastIndex = shownIndexes[shownIndexes.length - 1];
+        const indexDiff = Math.abs(index - lastIndex);
+        if (indexDiff !== 1 && indexDiff !== gameSize) {
+          changeMessage('Буквы должны идти по порядку. Давайте заново.');
+          setWrongShow(true);
         } else {
-          const lastIndex = shownIndexes[shownIndexes.length - 1];
-          const indexDiff = Math.abs(index - lastIndex);
-          if (indexDiff !== 1 && indexDiff !== gameSize) {
-            changeMessage('Буквы должны идти по порядку. Давайте заново.');
-            setWrongShow(true);
-          } else {
-            input.classList.add('letter--highlighted');
-            setShownIndexes(shownIndexes.concat([index]));
-          }
+          input.classList.add('letter--highlighted');
+          setShownIndexes(shownIndexes.concat([index]));
         }
-        console.log(`Shown indexes: ${shownIndexes}`);
       }
     }
   }

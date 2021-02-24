@@ -3,6 +3,7 @@ import { Letter } from './Letter';
 import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
 import { useMessage } from '../hooks/useMessage';
+import { usePlayersData } from '../hooks/usePlayersData';
 import { GAME_SIZES } from '../const/GAME_SIZES';
 import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
 
@@ -35,6 +36,7 @@ const GameBoard = () => {
   const { array } = useArray();
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
+  const { playersData, changePlayersData } = usePlayersData();
   const initialUsedIndexes = new Array(gameSize)
     .fill((array.length - gameSize) / 2)
     .map((item, index) => item + index);
@@ -46,9 +48,10 @@ const GameBoard = () => {
   const [wrongShow, setWrongShow] = useState(false);
   const [shownIndexes, setShownIndexes] = useState([-1]);
 
+  const movingIndex = playersData.findIndex((player) => player.isMoving);
+
   useEffect(() => {
     if (showWord && boardRef.current) {
-      console.log('show word mode is on');
       Array.from(boardRef.current.children).forEach((input) => {
         input.classList.add('letter--show');
       });
@@ -61,15 +64,30 @@ const GameBoard = () => {
         const resultWord = getShownWord(shownIndexes, array);
         const wordIsLegit = RUSSIAN_NOUNS.includes(resultWord);
         const wordIsUsed = usedWords.includes(resultWord);
-        const chosenIsAtEnd = shownIndexes[0] === chosenIndex ||
-          shownIndexes[shownIndexes.length - 1] === chosenIndex;
+        const chosenIsAtEnd = shownIndexes.includes(chosenIndex);
         if (wordIsLegit && !wordIsUsed && chosenIsAtEnd) {
-          changeMessage(`Отлично! За слово «${resultWord}» вы получаете ${resultWord.length} ${getPointsWord(resultWord.length)}.`);
+          changeMessage(`Отлично, ${playersData[movingIndex].name}! За слово «${resultWord}» вы получаете ${resultWord.length} ${getPointsWord(resultWord.length)}.`);
           setUsedIndexes(usedIndexes.concat([chosenIndex]));
           setUsedWords(usedWords.concat([resultWord]));
+          const newPlayersData = Array.from(playersData);
+          if (newPlayersData[movingIndex].words[0] === '') {
+            newPlayersData[movingIndex].words = [resultWord];
+          } else {
+            newPlayersData[movingIndex].words = newPlayersData[movingIndex]
+              .words.concat([resultWord]);
+          }
+          newPlayersData[movingIndex].score += resultWord.length;
+          newPlayersData[movingIndex].isMoving = false;
+          const newMovingIndex = newPlayersData[movingIndex + 1] ?
+            movingIndex + 1 : 0;
+          newPlayersData[newMovingIndex].isMoving = true;
+          changePlayersData(newPlayersData);
+          setTimeout(() => {
+            changeMessage(`Ваш ход, ${playersData[newMovingIndex].name}!`);
+          }, 1500);
         } else {
           if (!chosenIsAtEnd) {
-            changeMessage('Слово должно начинаться или заканчиваться на добавленную букву. Давайте заново.');
+            changeMessage('Слово должно содержать добавленную букву. Давайте заново.');
           } else if (wordIsUsed) {
             changeMessage(`Извините, слово «${resultWord}» уже использовалось. Давайте заново.`);
           } else {
@@ -94,7 +112,8 @@ const GameBoard = () => {
       window.removeEventListener('keydown', handleEnterPress);
     };
   }, [showWord, array, shownIndexes, changeMessage,
-    usedIndexes, usedWords, chosenIndex]);
+    usedIndexes, usedWords, chosenIndex, changePlayersData,
+    movingIndex, playersData]);
 
   useEffect(() => {
     if (wrongShow) {
@@ -111,7 +130,6 @@ const GameBoard = () => {
         });
       }
 
-      console.log('show word mode is off');
     }
   }, [wrongShow, array, chosenIndex]);
 

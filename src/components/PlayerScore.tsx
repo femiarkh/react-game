@@ -1,13 +1,29 @@
 import React from 'react';
 
-const PlayerScore = () => (
-  <div className="player-score">
-    <h3 className="player-score__header">Player1</h3>
-    <dl className="player-score__score-list">
-      <dt className="player-score__word">Кот</dt>
-      <dd className="player-score__length">3</dd>
-    </dl>
-  </div>
-);
+type Props = {
+  playerName: string;
+  words: string[];
+  score: number;
+  isMoving: boolean;
+};
+
+const PlayerScore = ({ playerName, words, score, isMoving }: Props) => {
+  const wordsList = words.map((word) => (
+    <div className="player-score__pair" key={word}>
+      <dt className="player-score__word">{word}</dt>
+      <dd className="player-score__length">{word.length}</dd>
+    </div>
+  ));
+
+  return (
+    <div className="player-score">
+      <h3 className={`player-score__header ${isMoving ? 'player-score__header--moving' : ''}`}>{ playerName }</h3>
+      <dl className="player-score__score-list">
+        { words[0] !== '' ? wordsList : null }
+      </dl>
+      <div className="player-score__total">{ score !== 0 ? score : null}</div>
+    </div>
+  );
+};
 
 export { PlayerScore };
