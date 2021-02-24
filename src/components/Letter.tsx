@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
 import { useMessage } from '../hooks/useMessage';
+import { checkInputPossibility } from '../utils/checkInputPossibility';
+import { checkInputLegibility } from '../utils/checkInputLegibility';
 
 type Props = {
   value: string;
@@ -15,21 +17,6 @@ type Props = {
   setShownIndexes: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
-function isInputPossible(index: number, array: {
-  value: string;
-  id: string;
-}[], size: number) {
-  if (array[index - size] && array[index - size].value !== ''
-  || array[index + size] && array[index + size].value !== ''
-  || array[index + 1] && (array[index + 1].value !== '' && (index + 1) % size !== 0)
-  || array[index - 1] && (array[index - 1].value !== '' && index % size !== 0)) return true;
-  return false;
-}
-
-function isInputLegit(input: string) {
-  return input.trim().match(/^[А-Яа-я]$/);
-}
-
 const Letter = ({
   value, index, disabled, showWord,
   setChosenIndex, setShowWord, setWrongShow,
@@ -39,14 +26,14 @@ const Letter = ({
   const { changeMessage } = useMessage();
 
   function handleBlur(evt: React.ChangeEvent<HTMLInputElement>) {
-    if (isInputPossible(index, array, gameSize)
-     && isInputLegit(evt.target.value)) {
+    if (checkInputPossibility(index, array, gameSize)
+     && checkInputLegibility(evt.target.value)) {
       changeMessage('Чудненько! Теперь выберите слово.');
       setChosenIndex(index);
       setShowWord(true);
       return;
     }
-    if (!isInputLegit(evt.target.value)) {
+    if (!checkInputLegibility(evt.target.value)) {
       if (evt.target.value !== '') {
         changeMessage('Неверный ввод: допустима лишь 1 русская буква.');
       }

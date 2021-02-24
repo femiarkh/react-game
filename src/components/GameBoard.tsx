@@ -6,30 +6,10 @@ import { useMessage } from '../hooks/useMessage';
 import { usePlayersData } from '../hooks/usePlayersData';
 import { GAME_SIZES } from '../const/GAME_SIZES';
 import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
+import { getPointsWord } from '../utils/getPointsWord';
 
 function getShownWord(indexes:number[], array:{ value:string; id:string; }[]) {
   return indexes.map((index) => array[index].value).join('').toLowerCase();
-}
-
-function getPointsWord(length: number) {
-  let word;
-  switch (length) {
-    case 1:
-      word = 'очко';
-      break;
-    case 2:
-      word = 'очка';
-      break;
-    case 3:
-      word = 'очка';
-      break;
-    case 4:
-      word = 'очка';
-      break;
-    default:
-      word = 'очков';
-  }
-  return word;
 }
 
 const GameBoard = () => {
