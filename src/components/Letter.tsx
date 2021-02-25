@@ -76,7 +76,10 @@ const Letter = ({
       } else {
         const lastIndex = shownIndexes[shownIndexes.length - 1];
         const indexDiff = Math.abs(index - lastIndex);
-        if (indexDiff !== 1 && indexDiff !== gameSize) {
+        if (shownIndexes.includes(index)) {
+          changeMessage('Нельзя использовать букву повторно. Давайте заново.');
+          setWrongShow(true);
+        } else if (indexDiff !== 1 && indexDiff !== gameSize) {
           changeMessage('Буквы должны идти по порядку. Давайте заново.');
           setWrongShow(true);
         } else {
