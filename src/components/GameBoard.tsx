@@ -6,6 +6,7 @@ import { useMessage } from '../hooks/useMessage';
 import { usePlayersData } from '../hooks/usePlayersData';
 import { GAME_SIZES } from '../const/GAME_SIZES';
 import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
+import { PASSES_BEFORE_FINISH } from '../const/PASSES_BEFORE_FINISH';
 import { getPointsWord } from '../utils/getPointsWord';
 import { getWinners } from '../utils/getWinners';
 
@@ -13,7 +14,12 @@ function getShownWord(indexes:number[], array:{ value:string; id:string; }[]) {
   return indexes.map((index) => array[index].value).join('').toLowerCase();
 }
 
-const GameBoard = () => {
+type Props = {
+  passCount: number;
+  setPassCount: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const GameBoard = ( { passCount, setPassCount }: Props ) => {
   const { array } = useArray();
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
@@ -68,6 +74,7 @@ const GameBoard = () => {
             }, 1500);
           }
           changePlayersData(newPlayersData);
+          setPassCount(0);
         } else {
           if (!chosenIsAtEnd) {
             changeMessage('Слово должно содержать добавленную букву. Давайте заново.');
@@ -96,7 +103,7 @@ const GameBoard = () => {
     };
   }, [showWord, array, shownIndexes, changeMessage,
     usedIndexes, usedWords, chosenIndex, changePlayersData,
-    movingIndex, playersData]);
+    movingIndex, playersData, setPassCount]);
 
   useEffect(() => {
     if (wrongShow) {
@@ -117,7 +124,8 @@ const GameBoard = () => {
   }, [wrongShow, array, chosenIndex]);
 
   useEffect(() => {
-    if (usedIndexes.length === array.length) {
+    if (usedIndexes.length === array.length ||
+      passCount === playersData.length * PASSES_BEFORE_FINISH) {
       let winMessage;
       const winners = getWinners(playersData);
       if (winners.length === 0) {
@@ -127,14 +135,15 @@ const GameBoard = () => {
       }
       changeMessage(`Игра окончена. ${winMessage}`);
     }
-  }, [usedIndexes.length, array.length, changeMessage, playersData]);
+  }, [usedIndexes.length, array.length, changeMessage, playersData, passCount]);
 
   const letters = array
     .map((item, index) => <Letter
       key={item.id}
       index={+item.id}
       value={item.value}
-      disabled={usedIndexes.includes(index) && !showWord}
+      disabled={usedIndexes.includes(index) && !showWord ||
+        passCount === playersData.length * PASSES_BEFORE_FINISH}
       setChosenIndex={setChosenIndex}
       showWord={showWord}
       setShowWord={setShowWord}
