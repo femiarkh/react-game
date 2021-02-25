@@ -53,7 +53,6 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
         const wordIsUsed = usedWords.includes(resultWord);
         const chosenIsAtEnd = shownIndexes.includes(chosenIndex);
         if (wordIsLegit && !wordIsUsed && chosenIsAtEnd) {
-          changeMessage(`Отлично, ${playersData[movingIndex].name}! За слово «${resultWord}» вы получаете ${resultWord.length} ${getPointsWord(resultWord.length)}.`);
           setUsedIndexes(usedIndexes.concat([chosenIndex]));
           setUsedWords(usedWords.concat([resultWord]));
           const newPlayersData = Array.from(playersData);
@@ -69,9 +68,7 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
             const newMovingIndex = newPlayersData[movingIndex + 1] ?
               movingIndex + 1 : 0;
             newPlayersData[newMovingIndex].isMoving = true;
-            setTimeout(() => {
-              changeMessage(`Ваш ход, ${playersData[newMovingIndex].name}!`);
-            }, 1500);
+            changeMessage(`Отлично, ${playersData[movingIndex].name} – ${resultWord.length} ${getPointsWord(resultWord.length)} за слово «${resultWord}»! ${playersData[newMovingIndex].name}, теперь ваш ход.`);
           }
           changePlayersData(newPlayersData);
           setPassCount(0);
