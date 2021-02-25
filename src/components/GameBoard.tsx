@@ -7,6 +7,7 @@ import { usePlayersData } from '../hooks/usePlayersData';
 import { GAME_SIZES } from '../const/GAME_SIZES';
 import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
 import { getPointsWord } from '../utils/getPointsWord';
+import { getWinners } from '../utils/getWinners';
 
 function getShownWord(indexes:number[], array:{ value:string; id:string; }[]) {
   return indexes.map((index) => array[index].value).join('').toLowerCase();
@@ -58,13 +59,15 @@ const GameBoard = () => {
           }
           newPlayersData[movingIndex].score += resultWord.length;
           newPlayersData[movingIndex].isMoving = false;
-          const newMovingIndex = newPlayersData[movingIndex + 1] ?
-            movingIndex + 1 : 0;
-          newPlayersData[newMovingIndex].isMoving = true;
+          if (array.length - usedIndexes.length !== 1) {
+            const newMovingIndex = newPlayersData[movingIndex + 1] ?
+              movingIndex + 1 : 0;
+            newPlayersData[newMovingIndex].isMoving = true;
+            setTimeout(() => {
+              changeMessage(`Ваш ход, ${playersData[newMovingIndex].name}!`);
+            }, 1500);
+          }
           changePlayersData(newPlayersData);
-          setTimeout(() => {
-            changeMessage(`Ваш ход, ${playersData[newMovingIndex].name}!`);
-          }, 1500);
         } else {
           if (!chosenIsAtEnd) {
             changeMessage('Слово должно содержать добавленную букву. Давайте заново.');
@@ -112,6 +115,19 @@ const GameBoard = () => {
 
     }
   }, [wrongShow, array, chosenIndex]);
+
+  useEffect(() => {
+    if (usedIndexes.length === array.length) {
+      let winMessage;
+      const winners = getWinners(playersData);
+      if (winners.length === 0) {
+        winMessage = 'Победила дружба!';
+      } else {
+        winMessage = `С победой, ${winners.join(', ')}!`;
+      }
+      changeMessage(`Игра окончена. ${winMessage}`);
+    }
+  }, [usedIndexes.length, array.length, changeMessage, playersData]);
 
   const letters = array
     .map((item, index) => <Letter

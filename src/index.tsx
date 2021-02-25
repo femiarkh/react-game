@@ -26,7 +26,7 @@ const players = [
 
 ReactDOM.render(
   <React.StrictMode>
-    <GameSizeProvider gameSize={5}>
+    <GameSizeProvider gameSize={3}>
       <ArrayProvider array={['']}>
         <MessageProvider message={`Ваш ход, ${players[0].name}.`}>
           <PlayersDataProvider playersData={players}>
