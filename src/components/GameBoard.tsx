@@ -47,7 +47,7 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
 
   useEffect(() => {
     function handleEnterPress(evt: KeyboardEvent) {
-      if (showWord && evt.key === 'Enter') {
+      if (showWord && evt.key === 'Enter' && shownIndexes[0] !== -1) {
         const resultWord = getShownWord(shownIndexes, array);
         const wordIsLegit = RUSSIAN_NOUNS.includes(resultWord);
         const wordIsUsed = usedWords.includes(resultWord);
@@ -140,7 +140,8 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
       index={+item.id}
       value={item.value}
       disabled={usedIndexes.includes(index) && !showWord ||
-        passCount === playersData.length * PASSES_BEFORE_FINISH}
+        passCount === playersData.length * PASSES_BEFORE_FINISH ||
+        showWord && item.value === ''}
       setChosenIndex={setChosenIndex}
       showWord={showWord}
       setShowWord={setShowWord}

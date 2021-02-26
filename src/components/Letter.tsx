@@ -25,35 +25,54 @@ const Letter = ({
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
 
+
   function handleBlur(evt: React.ChangeEvent<HTMLInputElement>) {
-    if (checkInputPossibility(index, array, gameSize)
-     && checkInputLegibility(evt.target.value)) {
-      changeMessage('Чудненько! Теперь выберите слово.');
-      setChosenIndex(index);
-      setShowWord(true);
-      return;
-    }
-    if (!checkInputLegibility(evt.target.value)) {
-      if (evt.target.value !== '') {
-        changeMessage('Неверный ввод: допустима лишь 1 русская буква.');
+    if (!showWord) {
+      if (checkInputPossibility(index, array, gameSize)
+      && checkInputLegibility(evt.target.value)) {
+        changeMessage('Чудненько! Теперь выберите слово.');
+        setChosenIndex(index);
+        setShowWord(true);
+        return;
       }
-    } else {
-      changeMessage('Извините, сюда вводить нельзя.');
+      if (!checkInputLegibility(evt.target.value)) {
+        if (evt.target.value !== '') {
+          changeMessage('Неверный ввод: допустима лишь 1 русская буква.');
+        }
+      } else {
+        changeMessage('Извините, сюда вводить нельзя.');
+      }
+      const newArray = Array.from(array);
+      newArray[index].value = '';
+      changeArray(newArray);
     }
-    const newArray = Array.from(array);
-    newArray[index].value = '';
-    changeArray(newArray);
   }
 
   function handleChange(evt: React.ChangeEvent<HTMLInputElement>) {
-    const newArray = Array.from(array);
-    newArray[index].value = evt.target.value.toUpperCase();
-    changeArray(newArray);
+    if (!showWord) {
+      const newArray = Array.from(array);
+      newArray[index].value = evt.target.value.toUpperCase();
+      changeArray(newArray);
+    }
   }
 
   function handleKeyDown(evt: React.KeyboardEvent<HTMLInputElement> ) {
-    if (evt.key === 'Enter' && inputRef.current) {
+    if (showWord) {
+      if (evt.key === ' ') {
+        evt.preventDefault();
+        handleClick();
+      }
+    } else if (evt.key === 'Enter' && inputRef.current) {
       inputRef.current.blur();
+    }
+  }
+
+  function handleFocus() {
+    if (showWord) {
+      const selection = document.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+      }
     }
   }
 
@@ -64,13 +83,10 @@ const Letter = ({
     }
   }
 
-  function handleClick(evt: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+  function handleClick() {
     if (showWord && inputRef.current) {
       const input = inputRef.current;
-      if (input.value === '') {
-        changeMessage('Выбор слова был прерван. Давайте заново.');
-        setWrongShow(true);
-      } else if (shownIndexes[0] === -1) {
+      if (shownIndexes[0] === -1) {
         input.classList.add('letter--highlighted');
         setShownIndexes([index]);
       } else {
@@ -92,7 +108,20 @@ const Letter = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  return <input className="letter" type="text" data-id={index} onChange={handleChange} value={value} onBlur={handleBlur} onKeyDown={handleKeyDown} disabled={disabled} ref={inputRef} onMouseDown={handleMouseDown} onClick={handleClick} />;
+  return <input
+    className="letter"
+    type="text"
+    data-id={index}
+    onChange={handleChange}
+    value={value}
+    onBlur={handleBlur}
+    onKeyDown={handleKeyDown}
+    disabled={disabled}
+    ref={inputRef}
+    onMouseDown={handleMouseDown}
+    onClick={handleClick}
+    onFocus={handleFocus}
+  />;
 };
 
 export { Letter };
