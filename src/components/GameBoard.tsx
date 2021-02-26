@@ -17,9 +17,20 @@ function getShownWord(indexes:number[], array:{ value:string; id:string; }[]) {
 type Props = {
   passCount: number;
   setPassCount: React.Dispatch<React.SetStateAction<number>>;
+  showWord: boolean;
+  setShowWord: React.Dispatch<React.SetStateAction<boolean>>;
+  checkButtonClicked: boolean;
+  setCheckButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  wrongShow: boolean;
+  setWrongShow: React.Dispatch<React.SetStateAction<boolean>>;
+  setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const GameBoard = ( { passCount, setPassCount }: Props ) => {
+const GameBoard = ( { passCount, setPassCount,
+  showWord, setShowWord,
+  checkButtonClicked, setCheckButtonClicked,
+  wrongShow, setWrongShow,
+  setGameOver }: Props ) => {
   const { array } = useArray();
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
@@ -31,8 +42,6 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
   const [usedIndexes, setUsedIndexes] = useState(initialUsedIndexes);
   const [usedWords, setUsedWords] = useState([initialWord]);
   const [chosenIndex, setChosenIndex] = useState(-1);
-  const [showWord, setShowWord] = useState(false);
-  const [wrongShow, setWrongShow] = useState(false);
   const [shownIndexes, setShownIndexes] = useState([-1]);
 
   const movingIndex = playersData.findIndex((player) => player.isMoving);
@@ -44,6 +53,14 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
       });
     }
   }, [showWord]);
+
+  useEffect(() => {
+    if (checkButtonClicked && shownIndexes[0] !== -1) {
+      const enterPress = new KeyboardEvent('keydown', { key: 'Enter' });
+      window.dispatchEvent(enterPress);
+      setCheckButtonClicked(false);
+    }
+  });
 
   useEffect(() => {
     function handleEnterPress(evt: KeyboardEvent) {
@@ -100,7 +117,7 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
     };
   }, [showWord, array, shownIndexes, changeMessage,
     usedIndexes, usedWords, chosenIndex, changePlayersData,
-    movingIndex, playersData, setPassCount]);
+    movingIndex, playersData, setPassCount, setShowWord]);
 
   useEffect(() => {
     if (wrongShow) {
@@ -118,7 +135,7 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
       }
 
     }
-  }, [wrongShow, array, chosenIndex]);
+  }, [wrongShow, array, chosenIndex, setShowWord, setWrongShow]);
 
   useEffect(() => {
     if (usedIndexes.length === array.length ||
@@ -131,8 +148,10 @@ const GameBoard = ( { passCount, setPassCount }: Props ) => {
         winMessage = `С победой, ${winners.join(', ')}!`;
       }
       changeMessage(`Игра окончена. ${winMessage}`);
+      setGameOver(true);
     }
-  }, [usedIndexes.length, array.length, changeMessage, playersData, passCount]);
+  }, [usedIndexes.length, array.length,
+    changeMessage, playersData, passCount, setGameOver]);
 
   const letters = array
     .map((item, index) => <Letter

@@ -109,6 +109,9 @@ button {
 }
 
 .buttons-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-gap: 10px;
   background-color: $main-color;
   margin-bottom: 5px;
 }

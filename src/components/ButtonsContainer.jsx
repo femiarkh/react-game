@@ -1,12 +1,17 @@
 import React from 'react';
 import { usePlayersData } from '../hooks/usePlayersData';
 import { useMessage } from '../hooks/useMessage';
-import { PASSES_BEFORE_FINISH } from '../const/PASSES_BEFORE_FINISH';
 
-const ButtonsContainer = ({ passCount, setPassCount }) => {
+const ButtonsContainer = ({ passCount, setPassCount,
+  showWord, setCheckButtonClicked,
+  setWrongShow, gameOver }) => {
   const { changeMessage } = useMessage();
   const { playersData, changePlayersData } = usePlayersData();
+
   function handlePassClick() {
+    if (showWord) {
+      setWrongShow(true);
+    }
     const movingIndex = playersData.findIndex((player) => player.isMoving);
     const newPlayersData = Array.from(playersData);
     newPlayersData[movingIndex].isMoving = false;
@@ -20,9 +25,27 @@ const ButtonsContainer = ({ passCount, setPassCount }) => {
 
     setPassCount(passCount + 1);
   }
+
+  function handleCheckClick() {
+    setCheckButtonClicked(true);
+  }
+
   return (
     <div className="buttons-container">
-      <button type="button" onClick={handlePassClick} disabled={passCount === playersData.length * PASSES_BEFORE_FINISH}>Пропустить</button>
+      <button
+        type="button"
+        onClick={handleCheckClick}
+        disabled={!showWord || gameOver}
+      >
+        Проверить
+      </button>
+      <button
+        type="button"
+        onClick={handlePassClick}
+        disabled={gameOver}
+      >
+        Пропустить
+      </button>
     </div>
   );
 };
