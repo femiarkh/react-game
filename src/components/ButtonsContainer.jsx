@@ -23,7 +23,7 @@ const ButtonsContainer = ({ passCount, setPassCount,
     }
     changePlayersData(newPlayersData);
 
-    setPassCount(passCount + 1);
+    setPassCount((passes) => passes + 1);
   }
 
   function handleCheckClick() {

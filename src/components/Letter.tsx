@@ -92,8 +92,13 @@ const Letter = ({
       } else {
         const lastIndex = shownIndexes[shownIndexes.length - 1];
         const indexDiff = Math.abs(index - lastIndex);
+        const rowDiff = Math.abs(Math.floor(index / gameSize) -
+        Math.floor(lastIndex / gameSize));
         if (shownIndexes.includes(index)) {
           changeMessage('Нельзя использовать букву повторно. Давайте заново.');
+          setWrongShow(true);
+        } else if (indexDiff === 1 && rowDiff !== 0) {
+          changeMessage('Буквы должны стоять рядом. Давайте заново.');
           setWrongShow(true);
         } else if (indexDiff !== 1 && indexDiff !== gameSize) {
           changeMessage('Буквы должны идти по порядку. Давайте заново.');
