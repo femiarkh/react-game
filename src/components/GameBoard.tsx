@@ -4,11 +4,14 @@ import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
 import { useMessage } from '../hooks/useMessage';
 import { usePlayersData } from '../hooks/usePlayersData';
+import { useNewGame } from '../hooks/useNewGame';
 import { GAME_SIZES } from '../const/GAME_SIZES';
 import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
 import { PASSES_BEFORE_FINISH } from '../const/PASSES_BEFORE_FINISH';
+import { INITIAL_PLAYERS } from '../const/INITIAL_PLAYERS';
 import { getPointsWord } from '../utils/getPointsWord';
 import { getWinners } from '../utils/getWinners';
+import { createInitialArray } from '../utils/createInitialArray';
 
 function getShownWord(indexes:number[], array:{ value:string; id:string; }[]) {
   return indexes.map((index) => array[index].value).join('').toLowerCase();
@@ -31,10 +34,11 @@ const GameBoard = ( { passCount, setPassCount,
   checkButtonClicked, setCheckButtonClicked,
   wrongShow, setWrongShow,
   setGameOver }: Props ) => {
-  const { array } = useArray();
+  const { array, changeArray } = useArray();
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
   const { playersData, changePlayersData } = usePlayersData();
+  const { newGame, changeNewGame } = useNewGame();
   const initialUsedIndexes = new Array(gameSize)
     .fill((array.length - gameSize) / 2)
     .map((item, index) => item + index);
@@ -45,6 +49,22 @@ const GameBoard = ( { passCount, setPassCount,
   const [shownIndexes, setShownIndexes] = useState([-1]);
 
   const movingIndex = playersData.findIndex((player) => player.isMoving);
+
+  useEffect(() => {
+    if (newGame) {
+      const newPlayers = INITIAL_PLAYERS
+        .map((player) => JSON.parse(JSON.stringify(player)));
+      changeArray(createInitialArray(gameSize));
+      changePlayersData(newPlayers);
+      setUsedIndexes(initialUsedIndexes);
+      setShownIndexes([-1]);
+      setChosenIndex(-1);
+      changeMessage(`Ваш ход, ${newPlayers[0].name}`);
+      changeNewGame(false);
+    }
+  }, [changeArray, changeMessage, changeNewGame,
+    gameSize, initialUsedIndexes, movingIndex, newGame,
+    playersData, changePlayersData]);
 
   useEffect(() => {
     if (showWord && boardRef.current) {

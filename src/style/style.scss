@@ -42,9 +42,15 @@ button {
 }
 
 .header {
+  display: grid;
+  justify-content: center;
   min-height: 10vh;
   padding: 10px;
   background-color: $header-color;
+}
+
+.header__game-title {
+  font-size: 1.2rem;
 }
 
 .main {

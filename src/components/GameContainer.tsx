@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GameBoard } from './GameBoard';
 import { ButtonsContainer } from './ButtonsContainer';
 import { ScoreContainer } from './ScoreContainer';
+import { useNewGame } from '../hooks/useNewGame';
 
 const GameContainer = () => {
   const [passCount, setPassCount] = useState(0);
@@ -9,6 +10,18 @@ const GameContainer = () => {
   const [checkButtonClicked, setCheckButtonClicked] = useState(false);
   const [wrongShow, setWrongShow] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const { newGame } = useNewGame();
+
+  useEffect(() => {
+    if (newGame) {
+      setPassCount(0);
+      setShowWord(false);
+      setCheckButtonClicked(false);
+      setWrongShow(false);
+      setGameOver(false);
+    }
+  }, [setPassCount, setShowWord, setCheckButtonClicked,
+    setWrongShow, setGameOver, newGame]);
 
   return (
     <div className="game-container">

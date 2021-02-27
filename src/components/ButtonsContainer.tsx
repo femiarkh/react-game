@@ -2,9 +2,18 @@ import React from 'react';
 import { usePlayersData } from '../hooks/usePlayersData';
 import { useMessage } from '../hooks/useMessage';
 
+type Props = {
+  passCount: number;
+  setPassCount: React.Dispatch<React.SetStateAction<number>>;
+  showWord: boolean;
+  setCheckButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setWrongShow: React.Dispatch<React.SetStateAction<boolean>>;
+  gameOver: boolean;
+};
+
 const ButtonsContainer = ({ passCount, setPassCount,
   showWord, setCheckButtonClicked,
-  setWrongShow, gameOver }) => {
+  setWrongShow, gameOver }: Props) => {
   const { changeMessage } = useMessage();
   const { playersData, changePlayersData } = usePlayersData();
 

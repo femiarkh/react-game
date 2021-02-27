@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
 import { useGameSize } from '../hooks/useGameSize';
+import { createInitialArray } from '../utils/createInitialArray';
 
 type Props = {
   children: React.ReactNode;
@@ -9,22 +9,10 @@ type Props = {
 
 const ArrayContext = React.createContext({ array: [{ value: '', id: '' }], changeArray: (values: { value: string; id: string; }[]) => {} });
 
-function getRandomWord(size: number):string {
-  const word = RUSSIAN_NOUNS[Math.floor(Math.random() * RUSSIAN_NOUNS.length)];
-  if (word.length !== size) {
-    return getRandomWord(size);
-  }
-  return word.toUpperCase();
-}
 
 export const ArrayProvider = ({ children, array }: Props) => {
   const { gameSize } = useGameSize();
-  const freeCellsNumber = (gameSize ** 2 - gameSize) / 2;
-  const emptyArray = new Array(freeCellsNumber).fill('');
-  const initialArray = emptyArray
-    .concat(getRandomWord(gameSize).split(''))
-    .concat(emptyArray)
-    .map((item, index) => ({ value: item, id: index.toString() }) );
+  const initialArray = createInitialArray(gameSize);
 
   const [currentArray, setCurrentArray] = useState(initialArray);
 
