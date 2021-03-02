@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Letter } from './Letter';
 import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
@@ -197,6 +197,43 @@ const GameBoard = ({
     }
   }, [wrongShow, array, chosenIndex, setShowWord, setWrongShow]);
 
+  const storeRecords = useCallback(
+    (
+      winners: {
+        id: number;
+        name: string;
+        words: string[];
+        score: number;
+        isMoving: boolean;
+      }[]
+    ) => {
+      const storedRecords = localStorage.getItem('balda-records');
+      if (storedRecords) {
+        const parsedRecords: [string, number][] = JSON.parse(storedRecords);
+        winners.forEach((winner) => {
+          const sameRecord = parsedRecords.find(
+            (item) => item[0] === winner.name && item[1] === winner.score
+          );
+          if (!sameRecord) {
+            parsedRecords.push([winner.name, winner.score]);
+          }
+        });
+        parsedRecords.sort((a, b) => b[1] - a[1]);
+        if (parsedRecords.length > 10) {
+          parsedRecords.splice(10);
+        }
+        localStorage.setItem('balda-records', JSON.stringify(parsedRecords));
+      } else {
+        const newRecords: [string, number][] = [];
+        winners.forEach((winner) => {
+          newRecords.push([winner.name, winner.score]);
+        });
+        localStorage.setItem('balda-records', JSON.stringify(newRecords));
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     if (
       usedIndexes.length === array.length ||
@@ -207,7 +244,12 @@ const GameBoard = ({
       if (winners.length === 0) {
         winMessage = 'Победила дружба!';
       } else {
-        winMessage = `С победой, ${winners.join(', ')}!`;
+        const winnersNames = winners.reduce(
+          (result: string[], winner) => [...result, winner.name],
+          []
+        );
+        winMessage = `С победой, ${winnersNames.join(', ')}!`;
+        storeRecords(winners);
       }
       changeMessage(`Игра окончена. ${winMessage}`);
       setGameOver(true);
@@ -220,6 +262,7 @@ const GameBoard = ({
     playersData,
     passCount,
     setGameOver,
+    storeRecords,
   ]);
 
   const letters = array.map((item, index) => (

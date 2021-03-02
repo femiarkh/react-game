@@ -37,6 +37,11 @@ button {
   }
 }
 
+h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
 .container {
   height: 100vh;
 }
@@ -54,6 +59,7 @@ button {
 }
 
 .main {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -171,6 +177,26 @@ button {
 
 .new-game-form__players {
   display: grid;
+}
+
+.records {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  background-color: $main-color;
+}
+
+.records__table {
+  min-width: 200px;
+}
+
+.records__table th {
+  text-align: left;
+  color: #000000;
+}
+
+.records__table td {
+  text-align: left;
 }
 
 @media (max-width: 820px) {
