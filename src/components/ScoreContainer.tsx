@@ -5,7 +5,7 @@ import { usePlayersData } from '../hooks/usePlayersData';
 const ScoreContainer = () => {
   const { playersData } = usePlayersData();
 
-  const scoreBoard = playersData.map((player, index) => (
+  const scoreBoard = playersData.map((player) => (
     <PlayerScore
       key={player.id}
       playerName={player.name}

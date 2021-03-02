@@ -9,16 +9,16 @@ import { PlayersDataProvider } from './context/PlayersDataContext';
 import { NewGameProvider } from './context/NewGameContext';
 import { INITIAL_PLAYERS } from './const/INITIAL_PLAYERS';
 
-const players = INITIAL_PLAYERS
+const defaultPlayers = INITIAL_PLAYERS
   .map((player) => JSON.parse(JSON.stringify(player)));
 
 ReactDOM.render(
   <React.StrictMode>
-    <GameSizeProvider gameSize={3}>
+    <GameSizeProvider gameSize={5}>
       <ArrayProvider array={['']}>
-        <MessageProvider message={`Ваш ход, ${players[0].name}.`}>
-          <PlayersDataProvider playersData={players}>
-            <NewGameProvider newGame={false}>
+        <MessageProvider message="">
+          <PlayersDataProvider playersData={defaultPlayers}>
+            <NewGameProvider newGame={true}>
               <App />
             </NewGameProvider>
           </PlayersDataProvider>

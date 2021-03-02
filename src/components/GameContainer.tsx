@@ -20,8 +20,18 @@ const GameContainer = () => {
       setWrongShow(false);
       setGameOver(false);
     }
-  }, [setPassCount, setShowWord, setCheckButtonClicked,
-    setWrongShow, setGameOver, newGame]);
+  }, [
+    setPassCount,
+    setShowWord,
+    setCheckButtonClicked,
+    setWrongShow,
+    setGameOver,
+    newGame,
+  ]);
+
+  if (newGame) {
+    return null;
+  }
 
   return (
     <div className="game-container">

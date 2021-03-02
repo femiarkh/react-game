@@ -7,7 +7,15 @@ const Header = () => {
   return (
     <div className="header">
       <h1 className="header__game-title">This... Is... BALDA!!!</h1>
-      <button type="button" onClick={() => changeNewGame(true)}>Новая игра</button>
+      <button
+        type="button"
+        onClick={() => {
+          localStorage.removeItem('balda-save');
+          changeNewGame(true);
+        }}
+      >
+        Новая игра
+      </button>
     </div>
   );
 };
