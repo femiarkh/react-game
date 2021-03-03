@@ -67,7 +67,7 @@ const GameBoard = ({
         audioRef.current.src = soundLink;
         audioRef.current.volume = audioSettings.soundVolume;
         audioRef.current.currentTime = 0;
-        audioRef.current.play();
+        audioRef.current.play().catch((err) => err);
       }
     },
     [audioSettings.soundOn, audioSettings.soundVolume]
