@@ -100,8 +100,15 @@ const GameBoard = ({
         const resultWord = getShownWord(shownIndexes, array);
         const wordIsLegit = RUSSIAN_NOUNS.includes(resultWord);
         const wordIsUsed = usedWords.includes(resultWord);
-        const chosenIsAtEnd = shownIndexes.includes(chosenIndex);
-        if (wordIsLegit && !wordIsUsed && chosenIsAtEnd) {
+        const chosenIsIncluded = shownIndexes.includes(chosenIndex);
+        if (wordIsLegit && !wordIsUsed && chosenIsIncluded) {
+          if (boardRef.current) {
+            Array.from(boardRef.current.children)
+              .filter((letter, index) => shownIndexes.includes(index))
+              .forEach((letter) => {
+                letter.classList.add('letter--success');
+              });
+          }
           setUsedIndexes(usedIndexes.concat([chosenIndex]));
           setUsedWords(usedWords.concat([resultWord]));
           const newPlayersData = Array.from(playersData);
@@ -134,7 +141,14 @@ const GameBoard = ({
           );
           setPassCount(0);
         } else {
-          if (!chosenIsAtEnd) {
+          if (boardRef.current) {
+            Array.from(boardRef.current.children)
+              .filter((letter, index) => shownIndexes.includes(index))
+              .forEach((letter) => {
+                letter.classList.add('letter--failure');
+              });
+          }
+          if (!chosenIsIncluded) {
             changeMessage(
               'Слово должно содержать добавленную букву. Давайте заново.'
             );
@@ -241,6 +255,13 @@ const GameBoard = ({
     ) {
       let winMessage;
       const winners = getWinners(playersData);
+      const winnersID = winners.map((winner) => winner.id);
+      playersData.forEach((player) => {
+        if (winnersID.includes(player.id)) {
+          const thePlayer = player;
+          thePlayer.isWinner = true;
+        }
+      });
       if (winners.length === 0) {
         winMessage = 'Победила дружба!';
       } else {

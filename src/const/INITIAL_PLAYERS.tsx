@@ -2,16 +2,18 @@ const INITIAL_PLAYERS = [
   {
     id: 0,
     name: 'Игрок1',
-    words:[''],
+    words: [''],
     score: 0,
-    isMoving: true
+    isMoving: true,
+    isWinner: false,
   },
   {
     id: 1,
     name: 'Игрок2',
-    words:[''],
+    words: [''],
     score: 0,
-    isMoving: false
+    isMoving: false,
+    isWinner: false,
   },
 ];
 

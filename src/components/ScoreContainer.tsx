@@ -12,15 +12,11 @@ const ScoreContainer = () => {
       words={player.words}
       score={player.score}
       isMoving={player.isMoving}
+      isWinner={player.isWinner}
     />
   ));
 
-
-  return (
-    <div className="score-container">
-      {scoreBoard}
-    </div>
-  );
+  return <div className="score-container">{scoreBoard}</div>;
 };
 
 export { ScoreContainer };

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useArray } from '../hooks/useArray';
 import { useGameSize } from '../hooks/useGameSize';
 import { useMessage } from '../hooks/useMessage';
@@ -18,18 +18,40 @@ type Props = {
 };
 
 const Letter = ({
-  value, index, disabled, showWord,
-  setChosenIndex, setShowWord, setWrongShow,
-  shownIndexes, setShownIndexes }: Props) => {
+  value,
+  index,
+  disabled,
+  showWord,
+  setChosenIndex,
+  setShowWord,
+  setWrongShow,
+  shownIndexes,
+  setShownIndexes,
+}: Props) => {
   const { array, changeArray } = useArray();
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.onanimationend = () => {
+        inputRef.current?.classList.remove('letter--success');
+        inputRef.current?.classList.remove('letter--failure');
+      };
+    }
+    return () => {
+      if (inputRef.current) {
+        inputRef.current.onanimationend = null;
+      }
+    };
+  }, []);
 
   function handleBlur(evt: React.ChangeEvent<HTMLInputElement>) {
     if (!showWord) {
-      if (checkInputPossibility(index, array, gameSize)
-      && checkInputLegibility(evt.target.value)) {
+      if (
+        checkInputPossibility(index, array, gameSize) &&
+        checkInputLegibility(evt.target.value)
+      ) {
         changeMessage('Чудненько! Теперь выберите слово.');
         setChosenIndex(index);
         setShowWord(true);
@@ -56,7 +78,7 @@ const Letter = ({
     }
   }
 
-  function handleKeyDown(evt: React.KeyboardEvent<HTMLInputElement> ) {
+  function handleKeyDown(evt: React.KeyboardEvent<HTMLInputElement>) {
     if (showWord) {
       if (evt.key === ' ') {
         evt.preventDefault();
@@ -76,8 +98,9 @@ const Letter = ({
     }
   }
 
-  function handleMouseDown(evt: React.MouseEvent<HTMLInputElement,
-  MouseEvent>) {
+  function handleMouseDown(
+    evt: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) {
     if (showWord) {
       evt.preventDefault();
     }
@@ -92,8 +115,9 @@ const Letter = ({
       } else {
         const lastIndex = shownIndexes[shownIndexes.length - 1];
         const indexDiff = Math.abs(index - lastIndex);
-        const rowDiff = Math.abs(Math.floor(index / gameSize) -
-        Math.floor(lastIndex / gameSize));
+        const rowDiff = Math.abs(
+          Math.floor(index / gameSize) - Math.floor(lastIndex / gameSize)
+        );
         if (shownIndexes.includes(index)) {
           changeMessage('Нельзя использовать букву повторно. Давайте заново.');
           setWrongShow(true);
@@ -113,20 +137,22 @@ const Letter = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  return <input
-    className="letter"
-    type="text"
-    data-id={index}
-    onChange={handleChange}
-    value={value}
-    onBlur={handleBlur}
-    onKeyDown={handleKeyDown}
-    disabled={disabled}
-    ref={inputRef}
-    onMouseDown={handleMouseDown}
-    onClick={handleClick}
-    onFocus={handleFocus}
-  />;
+  return (
+    <input
+      className="letter"
+      type="text"
+      data-id={index}
+      onChange={handleChange}
+      value={value}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      disabled={disabled}
+      ref={inputRef}
+      onMouseDown={handleMouseDown}
+      onClick={handleClick}
+      onFocus={handleFocus}
+    />
+  );
 };
 
 export { Letter };

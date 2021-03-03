@@ -3,6 +3,7 @@ import { GameBoard } from './GameBoard';
 import { ButtonsContainer } from './ButtonsContainer';
 import { ScoreContainer } from './ScoreContainer';
 import { useNewGame } from '../hooks/useNewGame';
+import { usePlayersData } from '../hooks/usePlayersData';
 
 const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
   const [passCount, setPassCount] = useState(0);
@@ -11,6 +12,7 @@ const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
   const [wrongShow, setWrongShow] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const { newGame } = useNewGame();
+  const { playersData } = usePlayersData();
 
   useEffect(() => {
     if (newGame) {
@@ -19,6 +21,10 @@ const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
       setCheckButtonClicked(false);
       setWrongShow(false);
       setGameOver(false);
+      playersData.forEach((player) => {
+        const thePlayer = player;
+        thePlayer.isWinner = false;
+      });
     }
   }, [
     setPassCount,
@@ -27,6 +33,7 @@ const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
     setWrongShow,
     setGameOver,
     newGame,
+    playersData,
   ]);
 
   if (newGame) {

@@ -9,6 +9,10 @@ $border-color: #47483c;
 $score-background-color: #a25fd8;
 $total-score-color: #f7ac68;
 $footer-color: #9fa35f;
+$black-color: #000000;
+$success-color: #ffff80;
+$failure-color: #ff0000;
+$winner-color: #ff8040;
 
 * {
   box-sizing: border-box;
@@ -29,10 +33,15 @@ button {
   border-radius: 5px;
   cursor: pointer;
 
+  &:hover {
+    background-color: $highlight-color;
+    transition: 0.4s;
+  }
+
   &:disabled {
     background-color: #c0c0c0;
-    color: #000000;
-    border: 1px solid #000000;
+    color: $black-color;
+    border: 1px solid $black-color;
     cursor: default;
   }
 }
@@ -125,6 +134,36 @@ h3 {
   background-color: $highlight-color;
 }
 
+@keyframes success {
+
+  from {
+    background-color: $success-color;
+  }
+
+  to {
+    background-color: $board-color;
+  }
+}
+
+.letter--success {
+  animation: success 0.4s 3;
+}
+
+@keyframes failure {
+
+  from {
+    background-color: $failure-color;
+  }
+
+  to {
+    background-color: $board-color;
+  }
+}
+
+.letter--failure {
+  animation: failure 0.4s;
+}
+
 .buttons-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -142,12 +181,22 @@ h3 {
   border: none;
   width: 30px;
   height: 30px;
+
+  &:hover {
+    background-color: transparent;
+  }
 }
 
 .fullscreen-button svg {
   width: 30px;
   height: 30px;
   fill: $font-color;
+  transition: 0.4s;
+
+  &:hover {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .score-container {
@@ -164,7 +213,22 @@ h3 {
 }
 
 .player-score__header--moving {
-  color: #ffff80;
+  color: $success-color;
+}
+
+@keyframes winner {
+
+  from {
+    color: $font-color;
+  }
+
+  to {
+    color: $winner-color;
+  }
+}
+
+.player-score__header--winner {
+  animation: winner 0.4s 3 forwards;
 }
 
 .player-score__pair {
@@ -245,7 +309,7 @@ h3 {
 }
 
 .footer__gh-link {
-  color: #000000;
+  color: $black-color;
 }
 
 .footer__logo {

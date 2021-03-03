@@ -7,6 +7,7 @@ type PlayerData = {
   words: string[];
   score: number;
   isMoving: boolean;
+  isWinner: false;
 };
 
 type Props = {
@@ -14,12 +15,14 @@ type Props = {
   playersData: PlayerData[];
 };
 
-const defaultPlayers = INITIAL_PLAYERS
-  .map((player) => JSON.parse(JSON.stringify(player)));
+const defaultPlayers = INITIAL_PLAYERS.map((player) =>
+  JSON.parse(JSON.stringify(player))
+);
 
 const PlayersDataContext = React.createContext({
   playersData: defaultPlayers,
-  changePlayersData: (values: PlayerData[]) => {} });
+  changePlayersData: (values: PlayerData[]) => {},
+});
 
 export const PlayersDataProvider = ({ children, playersData }: Props) => {
   const [currentPlayersData, setCurrentPlayersData] = useState(playersData);
