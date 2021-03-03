@@ -1,6 +1,11 @@
 import React from 'react';
 
-const Records = () => {
+type Props = {
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Records = ({ visible, setVisible }: Props) => {
   const storedRecords = localStorage.getItem('balda-records');
   let recordRows;
 
@@ -13,6 +18,8 @@ const Records = () => {
       </tr>
     ));
   }
+
+  if (!visible) return null;
 
   return storedRecords ? (
     <div className="records">
@@ -27,11 +34,32 @@ const Records = () => {
           {recordRows}
         </tbody>
       </table>
+      <div className="records__buttons">
+        <button type="button" onClick={() => setVisible(false)}>
+          Закрыть
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            localStorage.removeItem('balda-records');
+            setVisible(false);
+            setTimeout(() => setVisible(true), 0);
+          }}
+        >
+          Очистить
+        </button>
+      </div>
     </div>
   ) : (
     <div className="records">
+      <h3>Рекорды</h3>
       <div className="records__no-records">
         Извините, рекордов пока нет. Всё в ваших руках!
+      </div>
+      <div className="records__buttons">
+        <button type="button" onClick={() => setVisible(false)}>
+          Закрыть
+        </button>
       </div>
     </div>
   );

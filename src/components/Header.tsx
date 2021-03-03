@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNewGame } from '../hooks/useNewGame';
+import { Records } from './Records';
 
 const Header = () => {
   const { changeNewGame } = useNewGame();
+  const [recordsVisible, setRecordsVisible] = useState(false);
 
   return (
     <div className="header">
@@ -17,8 +19,14 @@ const Header = () => {
         >
           Новая игра
         </button>
-        <button type="button">Рекорды</button>
+        <button
+          type="button"
+          onClick={() => setRecordsVisible((visible) => !visible)}
+        >
+          Рекорды
+        </button>
       </div>
+      <Records visible={recordsVisible} setVisible={setRecordsVisible} />
     </div>
   );
 };
