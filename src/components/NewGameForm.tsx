@@ -25,6 +25,7 @@ const NewGameForm = () => {
       onChange={handlePlayerNameChange}
       autoComplete="off"
       required
+      maxLength={16}
     />
   ));
 

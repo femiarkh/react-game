@@ -209,9 +209,13 @@ h3 {
   min-width: 200px;
 }
 
-.player-score:not(:last-child) {
-  max-width: 50%;
-  margin-right: 10px;
+.player-score {
+  word-break: break-all;
+
+  &:not(:last-child) {
+    max-width: 50%;
+    margin-right: 10px;
+  }
 }
 
 .player-score__header--moving {
@@ -259,6 +263,13 @@ h3 {
 
 .new-game-form__players {
   display: grid;
+  grid-gap: 10px;
+}
+
+.new-game-form__players input {
+  height: 30px;
+  padding: 5px;
+  font-size: 1.2rem;
 }
 
 .records,
@@ -336,6 +347,10 @@ h3 {
 }
 
 @media (max-width: 820px) {
+
+  html {
+    font-size: 12px;
+  }
 
   .game-container__game-field {
     justify-self: center;
