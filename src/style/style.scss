@@ -127,10 +127,27 @@ h3 {
 
 .buttons-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   grid-gap: 10px;
   background-color: $main-color;
   margin-bottom: 5px;
+}
+
+.fullscreen-button {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  width: 30px;
+  height: 30px;
+}
+
+.fullscreen-button svg {
+  width: 30px;
+  height: 30px;
+  fill: $font-color;
 }
 
 .score-container {

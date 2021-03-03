@@ -4,7 +4,7 @@ import { ButtonsContainer } from './ButtonsContainer';
 import { ScoreContainer } from './ScoreContainer';
 import { useNewGame } from '../hooks/useNewGame';
 
-const GameContainer = () => {
+const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
   const [passCount, setPassCount] = useState(0);
   const [showWord, setShowWord] = useState(false);
   const [checkButtonClicked, setCheckButtonClicked] = useState(false);
@@ -43,6 +43,7 @@ const GameContainer = () => {
           setCheckButtonClicked={setCheckButtonClicked}
           setWrongShow={setWrongShow}
           gameOver={gameOver}
+          goFullScreen={goFullScreen}
         />
 
         <GameBoard
