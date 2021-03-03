@@ -4,6 +4,7 @@ import { useGameSize } from '../hooks/useGameSize';
 import { useMessage } from '../hooks/useMessage';
 import { checkInputPossibility } from '../utils/checkInputPossibility';
 import { checkInputLegibility } from '../utils/checkInputLegibility';
+import { FAILURE_LINK } from '../const/AUDIO_LINKS';
 
 type Props = {
   value: string;
@@ -15,6 +16,7 @@ type Props = {
   setWrongShow: React.Dispatch<React.SetStateAction<boolean>>;
   shownIndexes: number[];
   setShownIndexes: React.Dispatch<React.SetStateAction<number[]>>;
+  playSound: (soundLink: string) => void;
 };
 
 const Letter = ({
@@ -27,6 +29,7 @@ const Letter = ({
   setWrongShow,
   shownIndexes,
   setShownIndexes,
+  playSound,
 }: Props) => {
   const { array, changeArray } = useArray();
   const { gameSize } = useGameSize();
@@ -60,9 +63,11 @@ const Letter = ({
       if (!checkInputLegibility(evt.target.value)) {
         if (evt.target.value !== '') {
           changeMessage('Неверный ввод: допустима лишь 1 русская буква.');
+          playSound(FAILURE_LINK);
         }
       } else {
         changeMessage('Извините, сюда вводить нельзя.');
+        playSound(FAILURE_LINK);
       }
       const newArray = Array.from(array);
       newArray[index].value = '';

@@ -9,6 +9,8 @@ import { RUSSIAN_NOUNS } from '../const/RUSSIAN_NOUNS';
 import { PASSES_BEFORE_FINISH } from '../const/PASSES_BEFORE_FINISH';
 import { getPointsWord } from '../utils/getPointsWord';
 import { getWinners } from '../utils/getWinners';
+import { END_LINK, FAILURE_LINK, SUCCESS_LINK } from '../const/AUDIO_LINKS';
+import { useAudioSettings } from '../hooks/useAudioSettings';
 
 function getShownWord(
   indexes: number[],
@@ -47,6 +49,7 @@ const GameBoard = ({
   const { gameSize } = useGameSize();
   const { changeMessage } = useMessage();
   const { playersData, changePlayersData } = usePlayersData();
+  const { audioSettings } = useAudioSettings();
   const initialUsedIndexes = new Array(gameSize)
     .fill((array.length - gameSize) / 2)
     .map((item, index) => item + index);
@@ -58,12 +61,24 @@ const GameBoard = ({
 
   const movingIndex = playersData.findIndex((player) => player.isMoving);
 
+  const playSound = useCallback(
+    (soundLink: string) => {
+      if (audioSettings.soundOn && audioRef.current) {
+        audioRef.current.src = soundLink;
+        audioRef.current.volume = audioSettings.soundVolume;
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+    },
+    [audioSettings.soundOn, audioSettings.soundVolume]
+  );
+
   useEffect(() => {
     const savedGame = localStorage.getItem('balda-save');
-    if (typeof savedGame === 'string') {
-      const parsedSavedArray: { value: string; id: string }[] = JSON.parse(
-        savedGame
-      ).array;
+    if (savedGame) {
+      const parsedSavedData = JSON.parse(savedGame);
+      const parsedSavedArray: { value: string; id: string }[] =
+        parsedSavedData.array;
       const savedUsedIndexes: number[] = [];
       parsedSavedArray.forEach((item, index) => {
         if (item.value.trim() !== '') {
@@ -71,6 +86,7 @@ const GameBoard = ({
         }
       });
       setUsedIndexes(savedUsedIndexes);
+      setUsedWords(parsedSavedData.usedWords);
     } else {
       setUsedIndexes(initialUsedIndexes);
     }
@@ -110,7 +126,8 @@ const GameBoard = ({
               });
           }
           setUsedIndexes(usedIndexes.concat([chosenIndex]));
-          setUsedWords(usedWords.concat([resultWord]));
+          const updatedUsedWords = usedWords.concat([resultWord]);
+          setUsedWords(updatedUsedWords);
           const newPlayersData = Array.from(playersData);
           if (newPlayersData[movingIndex].words[0] === '') {
             newPlayersData[movingIndex].words = [resultWord];
@@ -137,9 +154,12 @@ const GameBoard = ({
           changePlayersData(newPlayersData);
           localStorage.setItem(
             'balda-save',
-            JSON.stringify({ playersData, array })
+            JSON.stringify({ playersData, array, usedWords: updatedUsedWords })
           );
           setPassCount(0);
+          if (array.length - usedIndexes.length !== 1) {
+            playSound(SUCCESS_LINK);
+          }
         } else {
           if (boardRef.current) {
             Array.from(boardRef.current.children)
@@ -162,6 +182,7 @@ const GameBoard = ({
             );
           }
           array[chosenIndex].value = '';
+          playSound(FAILURE_LINK);
         }
         setShowWord(false);
         setChosenIndex(-1);
@@ -192,6 +213,7 @@ const GameBoard = ({
     playersData,
     setPassCount,
     setShowWord,
+    playSound,
   ]);
 
   useEffect(() => {
@@ -275,6 +297,7 @@ const GameBoard = ({
       changeMessage(`Игра окончена. ${winMessage}`);
       setGameOver(true);
       localStorage.removeItem('balda-save');
+      playSound(END_LINK);
     }
   }, [
     usedIndexes.length,
@@ -284,6 +307,7 @@ const GameBoard = ({
     passCount,
     setGameOver,
     storeRecords,
+    playSound,
   ]);
 
   const letters = array.map((item, index) => (
@@ -302,10 +326,12 @@ const GameBoard = ({
       setWrongShow={setWrongShow}
       shownIndexes={shownIndexes}
       setShownIndexes={setShownIndexes}
+      playSound={playSound}
     />
   ));
 
   const boardRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
     <div
@@ -313,6 +339,9 @@ const GameBoard = ({
       ref={boardRef}
     >
       {letters}
+      <audio ref={audioRef}>
+        <track kind="captions" />
+      </audio>
     </div>
   );
 };

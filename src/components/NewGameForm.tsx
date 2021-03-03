@@ -90,7 +90,7 @@ const NewGameForm = () => {
 
   useEffect(() => {
     const savedGame = localStorage.getItem('balda-save');
-    if (typeof savedGame === 'string') {
+    if (savedGame) {
       const parsedSaveGame = JSON.parse(savedGame);
       changeArray(parsedSaveGame.array);
       changePlayersData(parsedSaveGame.playersData);
@@ -107,8 +107,6 @@ const NewGameForm = () => {
       );
       changeGameSize(Math.sqrt(parsedSaveGame.array.length));
       changeNewGame(false);
-    } else {
-      changeArray(createInitialArray(gameSize));
     }
   }, [newGame]);
 

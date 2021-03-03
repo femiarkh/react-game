@@ -7,10 +7,19 @@ import { ArrayProvider } from './context/ArrayContext';
 import { MessageProvider } from './context/MessageContext';
 import { PlayersDataProvider } from './context/PlayersDataContext';
 import { NewGameProvider } from './context/NewGameContext';
+import { AudioSettingsProvider } from './context/AudioSettingsContext';
 import { INITIAL_PLAYERS } from './const/INITIAL_PLAYERS';
 
-const defaultPlayers = INITIAL_PLAYERS
-  .map((player) => JSON.parse(JSON.stringify(player)));
+const defaultPlayers = INITIAL_PLAYERS.map((player) =>
+  JSON.parse(JSON.stringify(player))
+);
+
+const defaultAudioSettings = {
+  musicOn: false,
+  musicVolume: 1.0,
+  soundOn: false,
+  soundVolume: 1.0,
+};
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,7 +28,9 @@ ReactDOM.render(
         <MessageProvider message="">
           <PlayersDataProvider playersData={defaultPlayers}>
             <NewGameProvider newGame={true}>
-              <App />
+              <AudioSettingsProvider audioSettings={defaultAudioSettings}>
+                <App />
+              </AudioSettingsProvider>
             </NewGameProvider>
           </PlayersDataProvider>
         </MessageProvider>

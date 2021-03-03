@@ -4,6 +4,9 @@ import { ButtonsContainer } from './ButtonsContainer';
 import { ScoreContainer } from './ScoreContainer';
 import { useNewGame } from '../hooks/useNewGame';
 import { usePlayersData } from '../hooks/usePlayersData';
+import { useArray } from '../hooks/useArray';
+import { useGameSize } from '../hooks/useGameSize';
+import { createInitialArray } from '../utils/createInitialArray';
 
 const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
   const [passCount, setPassCount] = useState(0);
@@ -13,6 +16,8 @@ const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
   const [gameOver, setGameOver] = useState(false);
   const { newGame } = useNewGame();
   const { playersData } = usePlayersData();
+  const { changeArray } = useArray();
+  const { gameSize } = useGameSize();
 
   useEffect(() => {
     if (newGame) {
@@ -25,16 +30,9 @@ const GameContainer = ({ goFullScreen }: { goFullScreen: () => void }) => {
         const thePlayer = player;
         thePlayer.isWinner = false;
       });
+      changeArray(createInitialArray(gameSize));
     }
-  }, [
-    setPassCount,
-    setShowWord,
-    setCheckButtonClicked,
-    setWrongShow,
-    setGameOver,
-    newGame,
-    playersData,
-  ]);
+  }, [newGame]);
 
   if (newGame) {
     return null;

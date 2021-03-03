@@ -64,12 +64,14 @@ h3 {
 }
 
 .header__game-title {
+  text-align: center;
   font-size: 1.2rem;
 }
 
 .header__buttons {
   display: flex;
   justify-content: space-around;
+  gap: 5px;
 }
 
 .main {
@@ -259,7 +261,8 @@ h3 {
   display: grid;
 }
 
-.records {
+.records,
+.settings {
   z-index: 10;
   position: absolute;
   top: 50%;
@@ -271,6 +274,22 @@ h3 {
   justify-content: center;
   align-content: center;
   background-color: $header-color;
+}
+
+.settings__form {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.settings__form fieldset {
+  padding: 10px;
+}
+
+.settings__checkbox-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  align-items: center;
+  margin-bottom: 5px;
 }
 
 .records__table {
