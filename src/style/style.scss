@@ -1,0 +1,362 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+$font-color: #fcfdf4;
+$header-color: #72b3d1;
+$main-color: #cb89bc;
+$board-color: #5eae7c;
+$highlight-color: #a8a80f;
+$border-color: #47483c;
+$score-background-color: #a25fd8;
+$total-score-color: #f7ac68;
+$footer-color: #9fa35f;
+$black-color: #000000;
+$success-color: #ffff80;
+$failure-color: #ff0000;
+$winner-color: #ff8040;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Open Sans", Verdana, sans-serif;
+  color: $font-color;
+}
+
+button {
+  padding: 5px;
+  color: $font-color;
+  background-color: $board-color;
+  border: 1px solid $font-color;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $highlight-color;
+    transition: 0.4s;
+  }
+
+  &:disabled {
+    background-color: #c0c0c0;
+    color: $black-color;
+    border: 1px solid $black-color;
+    cursor: default;
+  }
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.container {
+  height: 100vh;
+}
+
+.header {
+  display: grid;
+  justify-content: center;
+  min-height: 10vh;
+  padding: 5px;
+  background-color: $header-color;
+}
+
+.header__game-title {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.header__buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 5px;
+}
+
+.main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 10px;
+  background-color: $main-color;
+}
+
+.message {
+  margin-bottom: 20px;
+}
+
+.game-container {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  width: 100%;
+}
+
+.game-container__game-field {
+  justify-self: end;
+}
+
+.game-board {
+  display: grid;
+  justify-content: center;
+}
+
+.game-board-small {
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+}
+
+.game-board-medium {
+  grid-template-columns: repeat(5, 60px);
+  grid-template-rows: repeat(5, 60px);
+}
+
+.game-board-large {
+  grid-template-columns: repeat(7, 45px);
+  grid-template-rows: repeat(7, 45px);
+}
+
+.letter {
+  text-align: center;
+  color: $font-color;
+  font-size: 1.4rem;
+  border: 1px solid $border-color;
+  background-color: $board-color;
+}
+
+.letter--show {
+  cursor: pointer;
+}
+
+.letter--highlighted {
+  background-color: $highlight-color;
+}
+
+@keyframes success {
+
+  from {
+    background-color: $success-color;
+  }
+
+  to {
+    background-color: $board-color;
+  }
+}
+
+.letter--success {
+  animation: success 0.4s 3;
+}
+
+@keyframes failure {
+
+  from {
+    background-color: $failure-color;
+  }
+
+  to {
+    background-color: $board-color;
+  }
+}
+
+.letter--failure {
+  animation: failure 0.4s;
+}
+
+.buttons-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-gap: 10px;
+  background-color: $main-color;
+  margin-bottom: 5px;
+}
+
+.fullscreen-button {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  width: 30px;
+  height: 30px;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.fullscreen-button svg {
+  width: 30px;
+  height: 30px;
+  fill: $font-color;
+  transition: 0.4s;
+
+  &:hover {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.score-container {
+  justify-self: start;
+  display: flex;
+  background-color: $score-background-color;
+  padding: 10px;
+  min-width: 200px;
+}
+
+.player-score {
+  word-break: break-all;
+
+  &:not(:last-child) {
+    max-width: 50%;
+    margin-right: 10px;
+  }
+}
+
+.player-score__header--moving {
+  color: $success-color;
+}
+
+@keyframes winner {
+
+  from {
+    color: $font-color;
+  }
+
+  to {
+    color: $winner-color;
+  }
+}
+
+.player-score__header--winner {
+  animation: winner 0.4s 3 forwards;
+}
+
+.player-score__pair {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.player-score__word {
+  margin-right: 5px;
+}
+
+.player-score__total {
+  font-size: 1.4rem;
+  color: #f7ac68;
+}
+
+.new-game-form {
+  padding: 20px;
+  text-align: center;
+}
+
+.new-game-form fieldset {
+  padding: 10px;
+  border: 5px solid $score-background-color;
+}
+
+.new-game-form__players {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.new-game-form__players input {
+  height: 30px;
+  padding: 5px;
+  font-size: 1.2rem;
+}
+
+.records,
+.settings {
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 200px;
+  padding: 20px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  background-color: $header-color;
+}
+
+.settings__form {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.settings__form fieldset {
+  padding: 10px;
+}
+
+.settings__checkbox-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.records__table {
+  min-width: 200px;
+  margin-bottom: 20px;
+}
+
+.records__table th {
+  text-align: left;
+  color: #ffac84;
+}
+
+.records__table td {
+  text-align: left;
+}
+
+.records__no-records {
+  margin-bottom: 20px;
+}
+
+.records__buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(3, auto);
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  min-height: 10vh;
+  padding: 10px;
+  background-color: $footer-color;
+}
+
+.footer__gh-link {
+  color: $black-color;
+}
+
+.footer__logo {
+  width: 100px;
+}
+
+@media (max-width: 820px) {
+
+  html {
+    font-size: 12px;
+  }
+
+  .game-container__game-field {
+    justify-self: center;
+  }
+
+  .score-container {
+    justify-self: center;
+  }
+}

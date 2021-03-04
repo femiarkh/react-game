@@ -1,0 +1,163 @@
+import React, { useRef, useEffect } from 'react';
+import { useArray } from '../hooks/useArray';
+import { useGameSize } from '../hooks/useGameSize';
+import { useMessage } from '../hooks/useMessage';
+import { checkInputPossibility } from '../utils/checkInputPossibility';
+import { checkInputLegibility } from '../utils/checkInputLegibility';
+import { FAILURE_LINK } from '../const/AUDIO_LINKS';
+
+type Props = {
+  value: string;
+  index: number;
+  disabled: boolean;
+  setChosenIndex: React.Dispatch<React.SetStateAction<number>>;
+  showWord: boolean;
+  setShowWord: React.Dispatch<React.SetStateAction<boolean>>;
+  setWrongShow: React.Dispatch<React.SetStateAction<boolean>>;
+  shownIndexes: number[];
+  setShownIndexes: React.Dispatch<React.SetStateAction<number[]>>;
+  playSound: (soundLink: string) => void;
+};
+
+const Letter = ({
+  value,
+  index,
+  disabled,
+  showWord,
+  setChosenIndex,
+  setShowWord,
+  setWrongShow,
+  shownIndexes,
+  setShownIndexes,
+  playSound,
+}: Props) => {
+  const { array, changeArray } = useArray();
+  const { gameSize } = useGameSize();
+  const { changeMessage } = useMessage();
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.onanimationend = () => {
+        inputRef.current?.classList.remove('letter--success');
+        inputRef.current?.classList.remove('letter--failure');
+      };
+    }
+    return () => {
+      if (inputRef.current) {
+        inputRef.current.onanimationend = null;
+      }
+    };
+  }, []);
+
+  function handleBlur(evt: React.ChangeEvent<HTMLInputElement>) {
+    if (!showWord) {
+      if (
+        checkInputPossibility(index, array, gameSize) &&
+        checkInputLegibility(evt.target.value)
+      ) {
+        changeMessage('Чудненько! Теперь выберите слово.');
+        setChosenIndex(index);
+        setShowWord(true);
+        return;
+      }
+      if (!checkInputLegibility(evt.target.value)) {
+        if (evt.target.value !== '') {
+          changeMessage('Неверный ввод: допустима лишь 1 русская буква.');
+          playSound(FAILURE_LINK);
+        }
+      } else {
+        changeMessage('Извините, сюда вводить нельзя.');
+        playSound(FAILURE_LINK);
+      }
+      const newArray = Array.from(array);
+      newArray[index].value = '';
+      changeArray(newArray);
+    }
+  }
+
+  function handleChange(evt: React.ChangeEvent<HTMLInputElement>) {
+    if (!showWord) {
+      const newArray = Array.from(array);
+      newArray[index].value = evt.target.value.toUpperCase();
+      changeArray(newArray);
+    }
+  }
+
+  function handleKeyDown(evt: React.KeyboardEvent<HTMLInputElement>) {
+    if (showWord) {
+      if (evt.key === ' ') {
+        evt.preventDefault();
+        handleClick();
+      }
+    } else if (evt.key === 'Enter' && inputRef.current) {
+      inputRef.current.blur();
+    }
+  }
+
+  function handleFocus() {
+    if (showWord) {
+      const selection = document.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+      }
+    }
+  }
+
+  function handleMouseDown(
+    evt: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) {
+    if (showWord) {
+      evt.preventDefault();
+    }
+  }
+
+  function handleClick() {
+    if (showWord && inputRef.current) {
+      const input = inputRef.current;
+      if (shownIndexes[0] === -1) {
+        input.classList.add('letter--highlighted');
+        setShownIndexes([index]);
+      } else {
+        const lastIndex = shownIndexes[shownIndexes.length - 1];
+        const indexDiff = Math.abs(index - lastIndex);
+        const rowDiff = Math.abs(
+          Math.floor(index / gameSize) - Math.floor(lastIndex / gameSize)
+        );
+        if (shownIndexes.includes(index)) {
+          changeMessage('Нельзя использовать букву повторно. Давайте заново.');
+          setWrongShow(true);
+        } else if (indexDiff === 1 && rowDiff !== 0) {
+          changeMessage('Буквы должны стоять рядом. Давайте заново.');
+          setWrongShow(true);
+        } else if (indexDiff !== 1 && indexDiff !== gameSize) {
+          changeMessage('Буквы должны идти по порядку. Давайте заново.');
+          setWrongShow(true);
+        } else {
+          input.classList.add('letter--highlighted');
+          setShownIndexes(shownIndexes.concat([index]));
+        }
+      }
+    }
+  }
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <input
+      className="letter"
+      type="text"
+      data-id={index}
+      onChange={handleChange}
+      value={value}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      disabled={disabled}
+      ref={inputRef}
+      onMouseDown={handleMouseDown}
+      onClick={handleClick}
+      onFocus={handleFocus}
+    />
+  );
+};
+
+export { Letter };
